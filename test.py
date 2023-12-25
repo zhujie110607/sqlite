@@ -1,20 +1,16 @@
 import pandas as pd
-import common
-import pymssql
-# with common.connect_sqlite('demo.db') as conn:  # 创建或连接数据库
-#     common.create_table(conn)  # 创建表
-#     df = pd.read_excel('item.xlsx',index_col='Item')  # 获取数据
-#     # 插入数据到表read_csv
-#     sql = 'SELECT Item FROM ItemVision'  # 查询数据库已有的数据
-#     bo=common.insert_data(df, conn, sql)
-#     if bo:
-#         print('插入成功')
-#         common.create_memory(common.connect_sqlite('demo.db'))
-#     else:
-#         print('插入失败')
+from file_py.SqlHelper import SqlHelper
 
-# common.create_memory()
-# print('查询成功')
+# sql='select Item,C_version,H_version from Item_version'
+# sql="select UserNumber,UserName,UserPwd,privs from UserManagement"
+df=pd.read_excel('item.xlsx',sheet_name='Sheet2')
+
+
+
+i=SqlHelper().Delete_SQLServer(df)
+print(i)
+
+
 
 
 
