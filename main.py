@@ -1,13 +1,12 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QMessageBox,QMainWindow
+from PySide6.QtWidgets import QApplication, QWidget, QMessageBox, QMainWindow
 from ui.Login_ui import Ui_frm_login
-from ui.Query_ui import Ui_frm_main
-from ui.main_ui import  Ui_MainWindow
+from ui.main_ui import Ui_MainWindow
 from PySide6.QtCore import Slot
 from SqlHelper import SqlHelper
 
 
-class LoginWindow(QWidget):
+class LoginWindow(QWidget): # 登录窗口
     def __init__(self):
         super().__init__()
         self.ui = Ui_frm_login()
@@ -34,13 +33,27 @@ class LoginWindow(QWidget):
             QMessageBox.warning(self, '系统消息', '用户名或密码错误,请重新输入', QMessageBox.Yes)
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow): # 主窗口
     def __init__(self, parent=None):
         super().__init__()
         self.parent = parent
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.user_zd = self.parent.user_zd
+        self.ui.user_zd = self.parent.user_zd # 绑定用户数据
+        self.bind()
+    def bind(self):
+        self.ui.action_add.triggered.connect(self.add) # 添加
+        self.ui.action_update.triggered.connect(self.update) # 修改
+        self.ui.action_delete.triggered.connect(self.delete) # 删除
+        self.ui.action_query.triggered.connect(self.query) # 查询
+    def add(self):
+        pass
+    def update(self):
+        pass
+    def delete(self):
+        pass
+    def query(self):
+        pass
 
 
 
