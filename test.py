@@ -1,6 +1,6 @@
 import pandas as pd
 import common
-
+import pymssql
 # with common.connect_sqlite('demo.db') as conn:  # 创建或连接数据库
 #     common.create_table(conn)  # 创建表
 #     df = pd.read_excel('item.xlsx',index_col='Item')  # 获取数据
@@ -13,6 +13,9 @@ import common
 #     else:
 #         print('插入失败')
 
-common.create_memory()
-print('查询成功')
+# common.create_memory()
+# print('查询成功')
+
+
+
 
