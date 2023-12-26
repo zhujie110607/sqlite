@@ -79,6 +79,7 @@ class Ui_MainWindow(object):
         self.txtScan.setAccessibleDescription("")
 #endif // QT_CONFIG(accessibility)
         self.txtScan.setText("")
+        self.txtScan.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u8bf7\u626b\u63cf\u6761\u7801", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6570\u636e\u7ba1\u7406", None))
     # retranslateUi
 
