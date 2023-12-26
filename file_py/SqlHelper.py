@@ -1,6 +1,6 @@
 import pandas as pd
 from PySide6.QtWidgets import QMessageBox
-from sqlalchemy import create_engine, delete, MetaData, Column, Table
+from sqlalchemy import create_engine, delete, MetaData, Column, Table, update
 from sqlalchemy.types import String
 
 
@@ -20,7 +20,7 @@ class SqlHelper:
         self.metadata.create_all(self.engine)
 
     # 将DataFrame中的数据导入或更新到SQL SERVER数据库
-    def df2sqlserver(self, df, table_name, ifexists):
+    def inster_sqlserver(self, df):  # df是DataFrame
         # 指定数据类型
         dtype = {'Item': String(20), 'C_version': String(100), 'H_version': String(200)}
 
@@ -28,18 +28,41 @@ class SqlHelper:
         with self.engine.begin() as connection:
             try:
                 # 将 DataFrame 写入数据库
-                result_proxy = df.to_sql(table_name, con=connection, if_exists=ifexists, index=False, dtype=dtype)
-                row_count = result_proxy.rowcount if result_proxy is not None else 0
+                df.to_sql('Item_version', con=connection, if_exists="append", index=False, dtype=dtype)
             except Exception as e:
                 # 处理插入失败的情况
-                print(f"Insert failed: {e}")
-                print(f"Error details: {str(e)}")  # Add this line to print detailed error information
                 connection.rollback()  # 回滚事务，撤销之前的操作
+                QMessageBox.critical(None, '错误', f'插入或更新失败：{e}')
                 return 0
             else:
                 connection.commit()  # 提交事务
-                return row_count
+                return len(df)
 
+    def update_sqlserver(self, df):
+        # 开始事务
+        with self.engine.begin() as connection:
+            try:
+                # 循环处理 DataFrame 中的每一行数据
+                for index, row in df.iterrows():
+                    update_data = {'C_version': row['C_version'], 'H_version': row['H_version']}
+                    # 构建更新条件
+                    update_condition = self.Item_version.c.Item == row['Item']
+
+                    # 使用 update 方法构建更新语句
+                    update_stmt = update(self.Item_version).values(update_data).where(update_condition)
+
+                    # 使用 execute 方法执行 UPDATE 语句
+                    result = connection.execute(update_stmt)
+            except Exception as e:
+                # 处理更新失败的情况
+                connection.rollback()  # 回滚事务，撤销之前的操作
+                QMessageBox.critical(None, '错误', f'更新失败：{e}')
+                return -1  # Return -1 in case of failure
+            else:
+                connection.commit()  # 提交事务
+                return result.rowcount
+
+    # 删除SQL SERVER数据库
     def Delete_SQLServer(self, df):
         # 开始事务
         with self.engine.begin() as connection:
@@ -57,11 +80,13 @@ class SqlHelper:
                 deleted_rows = result.rowcount
             except Exception as e:
                 # 处理删除失败的情况
-                print(f"Delete failed: {e}")
                 connection.rollback()  # 回滚事务，撤销之前的操作
+                QMessageBox.critical(None, '错误', f'删除失败：{e}')
+                return 0
             else:
                 return deleted_rows
 
+    # 查询SQL SERVER数据库
     def Query_SQLServer_by_SQL(self, sql):
         try:
             df = pd.read_sql_query(sql, self.engine)

@@ -1,11 +1,9 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QMessageBox, QMainWindow
-from ui.Login_ui import Ui_frm_login
-from ui.main_ui import Ui_MainWindow
+from PySide6.QtWidgets import QApplication, QWidget, QMessageBox
 from PySide6.QtCore import Slot
+from ui.Login_ui import Ui_frm_login
+from file_py.index import MainWindow
 from file_py.SqlHelper import SqlHelper
-from file_py.file_operations import FileManager
-
 
 class LoginWindow(QWidget):  # 登录窗口
     def __init__(self):
@@ -18,6 +16,7 @@ class LoginWindow(QWidget):  # 登录窗口
             QMessageBox.warning(self, '系统消息', '没有获取到用户表数据，请检查服务器是否关闭', QMessageBox.Yes)
             # 退出程序
             sys.exit()
+
 
     @Slot()
     def login(self):
@@ -32,31 +31,6 @@ class LoginWindow(QWidget):  # 登录窗口
             self.close()  # 隐藏登录窗口
         else:
             QMessageBox.warning(self, '系统消息', '用户名或密码错误,请重新输入', QMessageBox.Yes)
-
-
-class MainWindow(QMainWindow):  # 主窗口
-    def __init__(self, parent=None):
-        super().__init__()
-        self.parent = parent
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-        self.ui.user_zd = self.parent.user_zd  # 绑定用户数据
-        print(self.ui.user_zd['privs'])
-        if self.ui.user_zd['privs'] == 0:
-            self.ui.menu.setEnabled(False)
-
-        self.bind()
-
-    def bind(self):
-        self.ui.action_add.triggered.connect(FileManager.add)  # 添加
-        self.ui.action_update.triggered.connect(FileManager.update)  # 修改
-        self.ui.action_delete.triggered.connect(FileManager.delete)  # 删除
-        self.ui.action_query.triggered.connect(FileManager.query)  # 查询
-        self.ui.txtScan.returnPressed.connect(self.on_return_pressed)  # 回车键查询
-
-    def on_return_pressed(self):
-        user_input = self.ui.txtScan.text()  # 获取用户输入的内容
-        print(f"User pressed Enter. Input: {user_input}")
 
 
 if __name__ == '__main__':
