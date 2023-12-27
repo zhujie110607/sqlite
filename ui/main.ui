@@ -7,8 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>1710</width>
-    <height>858</height>
+    <height>860</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1710</width>
+    <height>860</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1710</width>
+    <height>860</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>编码版本管理</string>
@@ -17,11 +35,72 @@
    <widget class="QLineEdit" name="txtScan">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>10</y>
+      <x>700</x>
+      <y>20</y>
       <width>291</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>29</red>
+          <green>233</green>
+          <blue>182</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="128">
+          <red>29</red>
+          <green>233</green>
+          <blue>182</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Text">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>29</red>
+          <green>233</green>
+          <blue>182</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="128">
+          <red>29</red>
+          <green>233</green>
+          <blue>182</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="128">
+          <red>29</red>
+          <green>233</green>
+          <blue>182</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="toolTip">
      <string/>
@@ -36,23 +115,73 @@
      <string>请扫描条码</string>
     </property>
    </widget>
-   <widget class="QTableWidget" name="tab_data">
+   <widget class="QTableWidget" name="table">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>100</y>
       <width>1681</width>
-      <height>771</height>
+      <height>711</height>
      </rect>
     </property>
-    <property name="columnCount">
-     <number>5</number>
-    </property>
-    <column/>
-    <column/>
-    <column/>
-    <column/>
-    <column/>
+    <attribute name="horizontalHeaderStretchLastSection">
+     <bool>true</bool>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>条码</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>编码</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>生产日期</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>当前版本</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>历史版本</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -71,6 +200,7 @@
     <addaction name="action_add"/>
     <addaction name="action_update"/>
     <addaction name="action_query"/>
+    <addaction name="separator"/>
     <addaction name="action_delete"/>
    </widget>
    <addaction name="menu"/>
@@ -93,7 +223,7 @@
   </action>
   <action name="action_query">
    <property name="text">
-    <string>查询</string>
+    <string>导出</string>
    </property>
   </action>
  </widget>
