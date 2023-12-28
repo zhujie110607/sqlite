@@ -40,8 +40,8 @@ class LoginWindow(QWidget):  # 登录窗口
     def login(self):
         user = self.ui.txt_user.text()
         pwd = self.ui.txt_pwd.text()
-        user = 'zwx846533'
-        pwd = 'HUAWEI7410.'
+        user = 'wx876073'
+        pwd = '123456'
         if user in self.df['UserNumber'].values and pwd in self.df['UserPwd'].values:
             # 保存用户选择
             settings = QSettings('MyCompany', 'MyApp')
@@ -57,6 +57,7 @@ class LoginWindow(QWidget):  # 登录窗口
                 settings.setValue('pwd', '')
             self.ui.user_zd = self.df[self.df['UserNumber'] == user].to_dict('records')[0]
             self.main_window = MainWindow(self.ui)  # 创建主窗口实例
+            self.main_window.resize(920, 600)
             self.main_window.show()  # 显示主窗口
             self.close()  # 隐藏登录窗口
         else:

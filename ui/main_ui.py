@@ -18,15 +18,15 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QHeaderView, QLineEdit, QMainWindow,
     QMenu, QMenuBar, QSizePolicy, QStatusBar,
-    QTableWidget, QTableWidgetItem, QWidget)
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1710, 860)
-        MainWindow.setMinimumSize(QSize(1710, 860))
-        MainWindow.setMaximumSize(QSize(1710, 860))
+        MainWindow.resize(920, 600)
+        MainWindow.setMinimumSize(QSize(920, 600))
+        MainWindow.setMaximumSize(QSize(16777215, 16777215))
         MainWindow.setSizeIncrement(QSize(0, 0))
         self.action_add = QAction(MainWindow)
         self.action_add.setObjectName(u"action_add")
@@ -36,11 +36,15 @@ class Ui_MainWindow(object):
         self.action_delete.setObjectName(u"action_delete")
         self.action_query = QAction(MainWindow)
         self.action_query.setObjectName(u"action_query")
+        self.action_match = QAction(MainWindow)
+        self.action_match.setObjectName(u"action_match")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
+        self.centralwidget.setMinimumSize(QSize(920, 0))
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.txtScan = QLineEdit(self.centralwidget)
         self.txtScan.setObjectName(u"txtScan")
-        self.txtScan.setGeometry(QRect(700, 20, 291, 31))
         palette = QPalette()
         brush = QBrush(QColor(29, 233, 182, 255))
         brush.setStyle(Qt.SolidPattern)
@@ -62,6 +66,9 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         font.setBold(True)
         self.txtScan.setFont(font)
+
+        self.verticalLayout.addWidget(self.txtScan)
+
         self.table = QTableWidget(self.centralwidget)
         if (self.table.columnCount() < 5):
             self.table.setColumnCount(5)
@@ -84,12 +91,15 @@ class Ui_MainWindow(object):
         __qtablewidgetitem4.setFont(font1);
         self.table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.table.setObjectName(u"table")
-        self.table.setGeometry(QRect(10, 100, 1681, 711))
+        self.table.setMinimumSize(QSize(920, 600))
         self.table.horizontalHeader().setStretchLastSection(True)
+
+        self.verticalLayout.addWidget(self.table)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1710, 21))
+        self.menubar.setGeometry(QRect(0, 0, 920, 22))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         MainWindow.setMenuBar(self.menubar)
@@ -100,6 +110,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
         self.menu.addAction(self.action_add)
         self.menu.addAction(self.action_update)
+        self.menu.addSeparator()
+        self.menu.addAction(self.action_match)
         self.menu.addAction(self.action_query)
         self.menu.addSeparator()
         self.menu.addAction(self.action_delete)
@@ -115,6 +127,7 @@ class Ui_MainWindow(object):
         self.action_update.setText(QCoreApplication.translate("MainWindow", u"\u4fee\u6539", None))
         self.action_delete.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664", None))
         self.action_query.setText(QCoreApplication.translate("MainWindow", u"\u5bfc\u51fa", None))
+        self.action_match.setText(QCoreApplication.translate("MainWindow", u"\u5339\u914d", None))
 #if QT_CONFIG(tooltip)
         self.txtScan.setToolTip("")
 #endif // QT_CONFIG(tooltip)

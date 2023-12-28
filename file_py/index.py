@@ -14,8 +14,10 @@ class MainWindow(QMainWindow):  # 主窗口
         self.ui.setupUi(self)
         self.ui.user_zd = self.parent.user_zd  # 绑定用户数据
         self.fileManager = FileManager()
-        if self.ui.user_zd['privs'] == 0:
-            self.ui.menu.setEnabled(False)
+        if self.ui.user_zd['privs'] == 0: # 设置非管理员权限
+            self.ui.action_add.setVisible(False)
+            self.ui.action_update.setVisible(False)
+            self.ui.action_delete.setVisible(False)
         self.setupTableStructure()  # 绑定表格
         try:
             self.ui.df = pd.read_excel('D:\\生产日期.xlsx', sheet_name='Sheet1', usecols=['年份', '生产日期'])
@@ -39,6 +41,7 @@ class MainWindow(QMainWindow):  # 主窗口
         self.ui.action_update.triggered.connect(self.fileManager.update)  # 修改
         self.ui.action_delete.triggered.connect(self.fileManager.delete)  # 删除
         self.ui.action_query.triggered.connect(self.fileManager.export)  # 查询
+        self.ui.action_match.triggered.connect(self.fileManager.match)  # 匹配
         self.ui.txtScan.returnPressed.connect(self.on_return_pressed)  # 回车键查询
 
     def on_return_pressed(self):

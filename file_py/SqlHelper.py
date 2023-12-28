@@ -6,7 +6,7 @@ from sqlalchemy.types import String
 
 class SqlHelper:
     def __init__(self):
-        self.engine = create_engine('mssql+pyodbc://sa:cj126414.@192.168.1.7/Fr?driver=ODBC+Driver+17+for+SQL+Server',
+        self.engine = create_engine('mssql+pyodbc://sa:cj126414.@192.168.0.153/Fr?driver=ODBC+Driver+17+for+SQL+Server',
                                     fast_executemany=True)
         # Define the metadata and the table structure
         self.metadata = MetaData()
