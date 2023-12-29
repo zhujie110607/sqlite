@@ -24,8 +24,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(920, 600)
-        MainWindow.setMinimumSize(QSize(920, 600))
+        MainWindow.resize(1170, 500)
+        MainWindow.setMinimumSize(QSize(1170, 300))
         MainWindow.setMaximumSize(QSize(16777215, 16777215))
         MainWindow.setSizeIncrement(QSize(0, 0))
         self.action_add = QAction(MainWindow)
@@ -38,13 +38,18 @@ class Ui_MainWindow(object):
         self.action_query.setObjectName(u"action_query")
         self.action_match = QAction(MainWindow)
         self.action_match.setObjectName(u"action_match")
+        self.user_adm = QAction(MainWindow)
+        self.user_adm.setObjectName(u"user_adm")
+        self.pwd_update = QAction(MainWindow)
+        self.pwd_update.setObjectName(u"pwd_update")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.centralwidget.setMinimumSize(QSize(920, 0))
+        self.centralwidget.setMinimumSize(QSize(1170, 0))
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.txtScan = QLineEdit(self.centralwidget)
         self.txtScan.setObjectName(u"txtScan")
+        self.txtScan.setMinimumSize(QSize(1100, 0))
         palette = QPalette()
         brush = QBrush(QColor(29, 233, 182, 255))
         brush.setStyle(Qt.SolidPattern)
@@ -91,7 +96,7 @@ class Ui_MainWindow(object):
         __qtablewidgetitem4.setFont(font1);
         self.table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.table.setObjectName(u"table")
-        self.table.setMinimumSize(QSize(920, 600))
+        self.table.setMinimumSize(QSize(1170, 0))
         self.table.horizontalHeader().setStretchLastSection(True)
 
         self.verticalLayout.addWidget(self.table)
@@ -99,15 +104,18 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 920, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1170, 22))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
+        self.menu_2 = QMenu(self.menubar)
+        self.menu_2.setObjectName(u"menu_2")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menu.menuAction())
+        self.menubar.addAction(self.menu_2.menuAction())
         self.menu.addAction(self.action_add)
         self.menu.addAction(self.action_update)
         self.menu.addSeparator()
@@ -115,6 +123,8 @@ class Ui_MainWindow(object):
         self.menu.addAction(self.action_query)
         self.menu.addSeparator()
         self.menu.addAction(self.action_delete)
+        self.menu_2.addAction(self.user_adm)
+        self.menu_2.addAction(self.pwd_update)
 
         self.retranslateUi(MainWindow)
 
@@ -128,6 +138,8 @@ class Ui_MainWindow(object):
         self.action_delete.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664", None))
         self.action_query.setText(QCoreApplication.translate("MainWindow", u"\u5bfc\u51fa", None))
         self.action_match.setText(QCoreApplication.translate("MainWindow", u"\u5339\u914d", None))
+        self.user_adm.setText(QCoreApplication.translate("MainWindow", u"\u7528\u6237\u7ba1\u7406", None))
+        self.pwd_update.setText(QCoreApplication.translate("MainWindow", u"\u4fee\u6539\u5bc6\u7801", None))
 #if QT_CONFIG(tooltip)
         self.txtScan.setToolTip("")
 #endif // QT_CONFIG(tooltip)
@@ -147,5 +159,6 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem4 = self.table.horizontalHeaderItem(4)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"\u5386\u53f2\u7248\u672c", None));
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6570\u636e\u7ba1\u7406", None))
+        self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u7528\u6237\u7ba1\u7406", None))
     # retranslateUi
 

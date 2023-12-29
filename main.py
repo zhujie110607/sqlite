@@ -9,6 +9,7 @@ import qtmodern.windows
 
 
 class LoginWindow(QWidget):  # 登录窗口
+
     def __init__(self):
         super().__init__()
         self.ui = Ui_frm_login()
@@ -30,7 +31,8 @@ class LoginWindow(QWidget):  # 登录窗口
             QTimer.singleShot(0, lambda: self.ui.txt_pwd.setFocus())
         elif user == '':
             QTimer.singleShot(0, lambda: self.ui.txt_user.setFocus())
-        self.df = SqlHelper().Query_SQLServer_by_SQL("select UserNumber,UserName,UserPwd,privs from UserManagement")
+        self.df = SqlHelper().Query_SQLServer_by_SQL("select UserNumber,UserName,UserPwd,privs from Item_version_user")
+
         if self.df.empty:
             QMessageBox.warning(self, '系统消息', '没有获取到用户表数据，请检查服务器是否关闭', QMessageBox.Yes)
             # 退出程序
@@ -40,28 +42,32 @@ class LoginWindow(QWidget):  # 登录窗口
     def login(self):
         user = self.ui.txt_user.text()
         pwd = self.ui.txt_pwd.text()
-        user = 'wx876073'
-        pwd = '123456'
-        if user in self.df['UserNumber'].values and pwd in self.df['UserPwd'].values:
-            # 保存用户选择
-            settings = QSettings('MyCompany', 'MyApp')
-            settings.setValue('r_user', self.ui.cbox_user.isChecked())
-            settings.setValue('r_pwd', self.ui.cbox_pwd.isChecked())
-            if self.ui.cbox_user.isChecked():
-                settings.setValue('user', user)
-            else:
-                settings.setValue('user', '')
-            if self.ui.cbox_pwd.isChecked():
-                settings.setValue('pwd', pwd)
-            else:
-                settings.setValue('pwd', '')
-            self.ui.user_zd = self.df[self.df['UserNumber'] == user].to_dict('records')[0]
-            self.main_window = MainWindow(self.ui)  # 创建主窗口实例
-            self.main_window.resize(920, 600)
-            self.main_window.show()  # 显示主窗口
-            self.close()  # 隐藏登录窗口
+
+        if user not in self.df['UserNumber'].values:
+            QMessageBox.warning(self, '系统消息', '用户不存在，请检查用户名是否正确', QMessageBox.Yes)
+            return
+        if pwd != self.df[self.df['UserNumber'] == user]['UserPwd'].values[0]:
+            QMessageBox.warning(self, '系统消息', '密码错误，请检查密码是否正确', QMessageBox.Yes)
+            return
+
+        # 保存用户选择
+        settings = QSettings('MyCompany', 'MyApp')
+        settings.setValue('r_user', self.ui.cbox_user.isChecked())
+        settings.setValue('r_pwd', self.ui.cbox_pwd.isChecked())
+        if self.ui.cbox_user.isChecked():
+            settings.setValue('user', user)
         else:
-            QMessageBox.warning(self, '系统消息', '用户名或密码错误,请重新输入', QMessageBox.Yes)
+            settings.setValue('user', '')
+        if self.ui.cbox_pwd.isChecked():
+            settings.setValue('pwd', pwd)
+        else:
+            settings.setValue('pwd', '')
+        self.ui.user_zd = self.df[self.df['UserNumber'] == user].to_dict('records')[0]
+        self.ui.user_df = self.df
+        self.main_window = MainWindow(self.ui)  # 创建主窗口实例
+        self.main_window.resize(920, 600)
+        self.main_window.show()  # 显示主窗口
+        self.close()  # 隐藏登录窗口
 
 
 if __name__ == '__main__':

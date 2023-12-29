@@ -8,6 +8,8 @@ class SqlHelper:
     def __init__(self):
         self.engine = create_engine('mssql+pyodbc://sa:cj126414.@192.168.0.153/Fr?driver=ODBC+Driver+17+for+SQL+Server',
                                     fast_executemany=True)
+
+    def createMetadataTable(self):
         # Define the metadata and the table structure
         self.metadata = MetaData()
         self.Item_version = Table('Item_version', self.metadata,
@@ -43,6 +45,7 @@ class SqlHelper:
         with self.engine.begin() as connection:
             try:
                 # 循环处理 DataFrame 中的每一行数据
+                self.createMetadataTable()
                 for index, row in df.iterrows():
                     update_data = {'C_version': row['C_version'], 'H_version': row['H_version']}
                     # 构建更新条件
@@ -67,6 +70,7 @@ class SqlHelper:
         # 开始事务
         with self.engine.begin() as connection:
             try:
+                self.createMetadataTable()
                 # 构建删除条件
                 delete_condition = df['Item'].astype(str).tolist()
 
@@ -95,3 +99,21 @@ class SqlHelper:
             QMessageBox.critical(None, '错误', f'查询失败：{e}')
             # 返回空的DataFrame
             return pd.DataFrame()
+
+    def inster_user(self, df):  # df是DataFrame
+        # 指定数据类型
+        dtype = {'UserNumber': String(10), 'UserName': String(10), 'UserPwd': String(20)}
+
+        # 开始事务
+        with self.engine.begin() as connection:
+            try:
+                # 将 DataFrame 写入数据库
+                df.to_sql('Item_version_user', con=connection, if_exists="append", index=False, dtype=dtype)
+            except Exception as e:
+                # 处理插入失败的情况
+                connection.rollback()  # 回滚事务，撤销之前的操作
+                QMessageBox.critical(None, '错误', f'插入或更新失败：{e}')
+                return 0
+            else:
+                connection.commit()  # 提交事务
+                return len(df)

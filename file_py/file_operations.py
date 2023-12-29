@@ -21,7 +21,7 @@ class FileManager:
                                QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             path = select_file("请选择要添加数据的Excel文件")
             if path:
-                df = pd.read_excel(path, sheet_name='Sheet1', usecols=['编码', '当前版本', '历史版本'])
+                df = pd.read_excel(path, sheet_name='添加', usecols=['编码', '当前版本', '历史版本'])
                 if df.empty:
                     QMessageBox.warning(None, "系统消息", "文件为空")
                     return
@@ -37,7 +37,7 @@ class FileManager:
                                QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             path = select_file("请选择要添加数据的Excel文件")
             if path:
-                df = pd.read_excel(path, sheet_name='Sheet2', usecols=['编码', '当前版本', '历史版本'])
+                df = pd.read_excel(path, sheet_name='更新', usecols=['编码', '当前版本', '历史版本'])
                 if df.empty:
                     QMessageBox.warning(None, "系统消息", "文件为空")
                     return
@@ -90,7 +90,7 @@ class FileManager:
                                QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             path = select_file("请选择要添加数据的Excel文件")
             if path:
-                df = pd.read_excel(path, sheet_name='Sheet3', usecols=['编码'])
+                df = pd.read_excel(path, sheet_name='删除', usecols=['编码'])
                 if df.empty:
                     QMessageBox.warning(None, "系统消息", "文件为空")
                     return
