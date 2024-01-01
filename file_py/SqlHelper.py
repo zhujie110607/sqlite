@@ -2,13 +2,14 @@ import pandas as pd
 from PySide6.QtWidgets import QMessageBox
 from sqlalchemy import create_engine, delete, MetaData, Column, Table, update
 from sqlalchemy.types import String
+from file_py.common import Variable
 import pyodbc
 
 
 class SqlHelper:
     def __init__(self):
         pyodbc.pooling = False
-        self.engine = create_engine('mssql+pyodbc://sa:cj126414.@192.168.1.7/Fr?driver=ODBC+Driver+17+for+SQL+Server',
+        self.engine = create_engine(fr'mssql+pyodbc://sa:cj126414.@{Variable.ip}/Fr?driver=ODBC+Driver+17+for+SQL+Server',
                                     fast_executemany=True)
 
     def createMetadataTable(self):

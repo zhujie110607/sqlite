@@ -19,13 +19,6 @@ class MainWindow(QMainWindow):  # 主窗口
             self.ui.action_update.setVisible(False)
             self.ui.action_delete.setVisible(False)
         self.setupTableStructure()  # 绑定表格
-        try:
-            self.ui.df = pd.read_excel('D:\\生产日期.xlsx', sheet_name='Sheet1', usecols=['年份', '生产日期'])
-        except:
-            QMessageBox.warning(self, '警告', '没有获取到D盘中生产日期表格数据')
-            sys.exit()
-
-        self.ui.df.rename(columns={'年份': 'year', '生产日期': 'date'}, inplace=True)
         self.bind()
 
     def setupTableStructure(self):
@@ -67,7 +60,7 @@ class MainWindow(QMainWindow):  # 主窗口
                 QMessageBox.warning(self, '警告', '条码不能为空！')
                 return
             year = user_input[-8:-6]  # 截取出生产日期代号
-            date = self.ui.df[self.ui.df['year'] == year]['date'].values[0]
+            date = Variable.prodDate_df[Variable.prodDate_df['year'] == year]['date'].values[0]
             if date == None:
                 QMessageBox.warning(self, '警告', '生产日期不存在！')
                 return

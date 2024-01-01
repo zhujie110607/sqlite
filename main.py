@@ -1,3 +1,4 @@
+import os
 import sys
 from PySide6.QtWidgets import QApplication, QWidget, QMessageBox
 from PySide6.QtCore import Slot, QSettings, QTimer
@@ -5,9 +6,10 @@ from ui.Login_ui import Ui_frm_login
 from file_py.index import MainWindow
 from file_py.SqlHelper import SqlHelper
 from file_py.common import Variable
+from tkinter import filedialog, messagebox as msgbox
 import qtmodern.styles
 import qtmodern.windows
-
+import pandas as pd
 
 
 class LoginWindow(QWidget):  # 登录窗口
@@ -72,6 +74,20 @@ class LoginWindow(QWidget):  # 登录窗口
 
 
 if __name__ == '__main__':
+    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    try:
+        json_text = pd.read_json(os.path.join(base_path, 'config.json'))
+    except Exception:
+        msgbox.showerror('错误提示', '没有在当前程序路径中找到配置文件')
+        sys.exit()
+    try:
+        Variable.prodDate_df = pd.read_excel(os.path.join(base_path, '生产日期.xlsx'), sheet_name='Sheet1',
+                                             usecols=['年份', '生产日期'])
+        Variable.prodDate_df.rename(columns={'年份': 'year', '生产日期': 'date'}, inplace=True)
+    except Exception:
+        msgbox.showerror('错误提示', '没有获取到生产日期表格数据')
+        sys.exit()
+    Variable.ip = json_text.iloc[0, 0]
     app = QApplication([])
     login_window = LoginWindow()
     qtmodern.styles.dark(app)
