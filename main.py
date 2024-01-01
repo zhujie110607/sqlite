@@ -4,12 +4,13 @@ from PySide6.QtCore import Slot, QSettings, QTimer
 from ui.Login_ui import Ui_frm_login
 from file_py.index import MainWindow
 from file_py.SqlHelper import SqlHelper
+from file_py.common import Variable
 import qtmodern.styles
 import qtmodern.windows
 
 
-class LoginWindow(QWidget):  # 登录窗口
 
+class LoginWindow(QWidget):  # 登录窗口
     def __init__(self):
         super().__init__()
         self.ui = Ui_frm_login()
@@ -31,9 +32,10 @@ class LoginWindow(QWidget):  # 登录窗口
             QTimer.singleShot(0, lambda: self.ui.txt_pwd.setFocus())
         elif user == '':
             QTimer.singleShot(0, lambda: self.ui.txt_user.setFocus())
-        self.df = SqlHelper().Query_SQLServer_by_SQL("select UserNumber,UserName,UserPwd,privs from Item_version_user")
+        Variable.user_df = SqlHelper().Query_SQLServer_by_SQL(
+            "select UserNumber,UserName,UserPwd,privs from Item_version_user")
 
-        if self.df.empty:
+        if Variable.user_df.shape[0] == 0:
             QMessageBox.warning(self, '系统消息', '没有获取到用户表数据，请检查服务器是否关闭', QMessageBox.Yes)
             # 退出程序
             sys.exit()
@@ -43,10 +45,10 @@ class LoginWindow(QWidget):  # 登录窗口
         user = self.ui.txt_user.text()
         pwd = self.ui.txt_pwd.text()
 
-        if user not in self.df['UserNumber'].values:
+        if user not in Variable.user_df['UserNumber'].values:
             QMessageBox.warning(self, '系统消息', '用户不存在，请检查用户名是否正确', QMessageBox.Yes)
             return
-        if pwd != self.df[self.df['UserNumber'] == user]['UserPwd'].values[0]:
+        if pwd != Variable.user_df[Variable.user_df['UserNumber'] == user]['UserPwd'].values[0]:
             QMessageBox.warning(self, '系统消息', '密码错误，请检查密码是否正确', QMessageBox.Yes)
             return
 
@@ -62,9 +64,8 @@ class LoginWindow(QWidget):  # 登录窗口
             settings.setValue('pwd', pwd)
         else:
             settings.setValue('pwd', '')
-        self.ui.user_zd = self.df[self.df['UserNumber'] == user].to_dict('records')[0]
-        self.ui.user_df = self.df
-        self.main_window = MainWindow(self.ui)  # 创建主窗口实例
+        Variable.user_zd = Variable.user_df[Variable.user_df['UserNumber'] == user].to_dict('records')[0]
+        self.main_window = MainWindow()  # 创建主窗口实例
         self.main_window.resize(920, 600)
         self.main_window.show()  # 显示主窗口
         self.close()  # 隐藏登录窗口

@@ -16,38 +16,45 @@ class FileManager:
         if self.sqliteMemory.execute_query("SELECT count(*) FROM Item_version") == 0:
             QMessageBox.information(None, "系统消息", "请先导入数据")
 
+    def wrapper(func):
+        def inner(*args, **kwargs):
+            if QMessageBox.warning(None, "系统消息", "您点击了" + func.__name__ + "按钮，请确认是否要" + func.__name__,
+                                   QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                func(*args, **kwargs)
+
+        return inner
+
+    @wrapper
     def add(self):
-        if QMessageBox.warning(None, "系统消息", "您点击了添加按钮，请确认是否要添加数据",
-                               QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            path = select_file("请选择要添加数据的Excel文件")
-            if path:
-                df = pd.read_excel(path, sheet_name='添加', usecols=['编码', '当前版本', '历史版本'])
-                if df.empty:
-                    QMessageBox.warning(None, "系统消息", "文件为空")
-                    return
+        path = select_file("请选择要添加数据的Excel文件")
+        if path:
+            df = pd.read_excel(path, sheet_name='添加', usecols=['编码', '当前版本', '历史版本'])
+            if df.empty:
+                QMessageBox.warning(None, "系统消息", "文件为空")
+                return
+            else:
+                df.rename(columns={'编码': 'Item', '当前版本': 'C_version', '历史版本': 'H_version'}, inplace=True)
+                if self.sqlHelper.inster_sqlserver(df=df) > 0:
+                    QMessageBox.information(None, "系统消息", "添加成功")
                 else:
-                    df.rename(columns={'编码': 'Item', '当前版本': 'C_version', '历史版本': 'H_version'}, inplace=True)
-                    if self.sqlHelper.inster_sqlserver(df=df) > 0:
-                        QMessageBox.information(None, "系统消息", "添加成功")
-                    else:
-                        QMessageBox.warning(None, "系统消息", "添加失败")
+                    QMessageBox.warning(None, "系统消息", "添加失败")
 
+    @wrapper
     def update(self):
-        if QMessageBox.warning(None, "系统消息", "您点击了修改按钮，请确认是否要修改数据",
-                               QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            path = select_file("请选择要添加数据的Excel文件")
-            if path:
-                df = pd.read_excel(path, sheet_name='更新', usecols=['编码', '当前版本', '历史版本'])
-                if df.empty:
-                    QMessageBox.warning(None, "系统消息", "文件为空")
-                    return
+        path = select_file("请选择要添加数据的Excel文件")
+        if path:
+            df = pd.read_excel(path, sheet_name='更新', usecols=['编码', '当前版本', '历史版本'])
+            if df.empty:
+                QMessageBox.warning(None, "系统消息", "文件为空")
+                return
+            else:
+                df.rename(columns={'编码': 'Item', '当前版本': 'C_version', '历史版本': 'H_version'}, inplace=True)
+                if self.sqlHelper.update_sqlserver(df=df) > 0:
+                    QMessageBox.information(None, "系统消息", "修改成功")
                 else:
-                    df.rename(columns={'编码': 'Item', '当前版本': 'C_version', '历史版本': 'H_version'}, inplace=True)
-                    if self.sqlHelper.update_sqlserver(df=df) > 0:
-                        QMessageBox.information(None, "系统消息", "修改成功")
-                    else:
-                        QMessageBox.warning(None, "系统消息", "修改失败")
+                    QMessageBox.warning(None, "系统消息", "修改失败")
 
+    @wrapper
     def match(self):
         dfsqlite = self.query_all()
         if dfsqlite.empty:
@@ -85,32 +92,31 @@ class FileManager:
                 writer.close()
                 QMessageBox.information(None, "系统消息", "导出成功")
 
+    @wrapper
     def delete(self):
-        if QMessageBox.warning(None, "系统消息", "您点击了删除按钮，请确认是否要删除数据",
-                               QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            path = select_file("请选择要添加数据的Excel文件")
-            if path:
-                df = pd.read_excel(path, sheet_name='删除', usecols=['编码'])
-                if df.empty:
-                    QMessageBox.warning(None, "系统消息", "文件为空")
-                    return
-                else:
-                    df.rename(columns={'编码': 'Item'}, inplace=True)
-                    if self.sqlHelper.Delete_SQLServer(df=df) > 0:
-                        QMessageBox.information(None, "系统消息", "删除成功")
+        path = select_file("请选择要添加数据的Excel文件")
+        if path:
+            df = pd.read_excel(path, sheet_name='删除', usecols=['编码'])
+            if df.empty:
+                QMessageBox.warning(None, "系统消息", "文件为空")
+                return
+            else:
+                df.rename(columns={'编码': 'Item'}, inplace=True)
+                if self.sqlHelper.Delete_SQLServer(df=df) > 0:
+                    QMessageBox.information(None, "系统消息", "删除成功")
 
+    @wrapper
     # 导出数据
     def export(self):
         # 询问用户是否导出数据，如果是，则导出数据
-        if QMessageBox.question(None, "系统消息", "是否导出数据", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            df = self.query_all()
-            if df.empty:
-                QMessageBox.warning(None, "系统消息", "查询结果为空")
-            else:
-                # 导出数据
-                df.to_excel('data.xlsx', index=False)
-                # 打开文件导出的文件
-                os.startfile('data.xlsx')
+        df = self.query_all()
+        if df.empty:
+            QMessageBox.warning(None, "系统消息", "查询结果为空")
+        else:
+            # 导出数据
+            df.to_excel('data.xlsx', index=False)
+            # 打开文件导出的文件
+            os.startfile('data.xlsx')
 
     def query_all(self):
         sql = "SELECT Item, C_version, H_version FROM Item_version"

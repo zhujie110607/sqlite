@@ -4,21 +4,17 @@ from PySide6.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QMessa
 from ui.main_ui import Ui_MainWindow
 from file_py.file_operations import FileManager
 from file_py.user import Useradmin
+from file_py.common import Variable
 import pandas as pd
 
-user_data = None
+
 class MainWindow(QMainWindow):  # 主窗口
-    def __init__(self, parent=None):
+    def __init__(self):
         super().__init__()
-        self.parent = parent
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.user_zd = self.parent.user_zd  # 绑定用户数据
-        global user_data
-        user_data = self.parent.user_df
         self.fileManager = FileManager()
-
-        if self.ui.user_zd['privs'] == 0: # 设置非管理员权限
+        if Variable.user_zd['privs'] == 0:  # 设置非管理员权限
             self.ui.action_add.setVisible(False)
             self.ui.action_update.setVisible(False)
             self.ui.action_delete.setVisible(False)
@@ -48,6 +44,7 @@ class MainWindow(QMainWindow):  # 主窗口
         self.ui.action_match.triggered.connect(self.fileManager.match)  # 匹配
         self.ui.txtScan.returnPressed.connect(self.on_return_pressed)  # 回车键查询
         self.ui.user_adm.triggered.connect(self.userFrom)
+
     def userFrom(self):
         self.ui.useradmin = Useradmin()
         self.ui.useradmin.show()
