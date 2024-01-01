@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>用户管理</string>
+   <string>添加用户</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

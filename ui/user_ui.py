@@ -80,7 +80,7 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u7528\u6237\u7ba1\u7406", None))
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"\u6dfb\u52a0\u7528\u6237", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u8d26\u53f7\uff1a", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"\u5bc6\u7801\uff1a", None))
         self.checkBox.setText(QCoreApplication.translate("Form", u"\u7ba1\u7406\u5458", None))

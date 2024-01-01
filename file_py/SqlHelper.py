@@ -24,6 +24,16 @@ class SqlHelper:
         # Create the table if it doesn't exist
         self.metadata.create_all(self.engine)
 
+    def createUserTable(self):
+        # Define the metadata and the table structure
+        self.metadata_user = MetaData()
+        self.Item_version_user = Table('Item_version_user', self.metadata_user,
+                                  Column('UserNumber', String, primary_key=True),
+                                  # Add other columns as needed
+                                  Column('UserPwd', String))
+        # Create the table if it doesn't exist
+        self.metadata_user.create_all(self.engine)
+
     # 将DataFrame中的数据导入或更新到SQL SERVER数据库
     def inster_sqlserver(self, df):  # df是DataFrame
         # 指定数据类型
@@ -120,3 +130,28 @@ class SqlHelper:
             else:
                 connection.commit()  # 提交事务
                 return len(df)
+
+    def update_userpwd(self, df):
+        # 开始事务
+        with self.engine.begin() as connection:
+            try:
+                # 循环处理 DataFrame 中的每一行数据
+                self.createUserTable()
+                for index, row in df.iterrows():
+                    update_data = {'UserPwd': row['UserPwd']}
+                    # 构建更新条件
+                    update_condition = self.Item_version_user.c.UserNumber == row['UserNumber']
+
+                    # 使用 update 方法构建更新语句
+                    update_stmt = update(self.Item_version_user).values(update_data).where(update_condition)
+
+                    # 使用 execute 方法执行 UPDATE 语句
+                    result = connection.execute(update_stmt)
+            except Exception as e:
+                # 处理更新失败的情况
+                connection.rollback()  # 回滚事务，撤销之前的操作
+                QMessageBox.critical(None, '错误', f'更新失败：{e}')
+                return -1  # Return -1 in case of failure
+            else:
+                connection.commit()  # 提交事务
+                return result.rowcount

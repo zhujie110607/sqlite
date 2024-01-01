@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QMessa
 from ui.main_ui import Ui_MainWindow
 from file_py.file_operations import FileManager
 from file_py.user import Useradmin
+from file_py.update_user import UpdateUser
 from file_py.common import Variable
 import pandas as pd
 
@@ -18,6 +19,7 @@ class MainWindow(QMainWindow):  # 主窗口
             self.ui.action_add.setVisible(False)
             self.ui.action_update.setVisible(False)
             self.ui.action_delete.setVisible(False)
+            self.ui.user_adm.setVisible(False)
         self.setupTableStructure()  # 绑定表格
         self.bind()
 
@@ -37,11 +39,14 @@ class MainWindow(QMainWindow):  # 主窗口
         self.ui.action_match.triggered.connect(self.fileManager.match)  # 匹配
         self.ui.txtScan.returnPressed.connect(self.on_return_pressed)  # 回车键查询
         self.ui.user_adm.triggered.connect(self.userFrom)
+        self.ui.pwd_update.triggered.connect(self.update_userFrom)
 
     def userFrom(self):
         self.ui.useradmin = Useradmin()
         self.ui.useradmin.show()
-
+    def update_userFrom(self):
+        self.ui.updateUser = UpdateUser()
+        self.ui.updateUser.show()
     def on_return_pressed(self):
         try:
             user_input = self.ui.txtScan.text().strip()  # 获取用户输入的内容

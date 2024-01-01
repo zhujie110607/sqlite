@@ -35,11 +35,11 @@ class Useradmin(QWidget):
             return
         # 判断账号长度是否在6-16之间
         elif len(user) < 6 or len(user) > 10:
-            QMessageBox.warning(self, '警告', '账号长度不符合要求！')
+            QMessageBox.warning(self, '警告', '账号长度在6-10之间！')
             return
         # 判断密码长度是否在6-16之间
         elif len(pwd) < 6 or len(pwd) > 16:
-            QMessageBox.warning(self, '警告', '密码长度不符合要求！')
+            QMessageBox.warning(self, '警告', '密码长度在6-16之间！')
             return
         # 判断密码是否包含字母+数字
         if not any(i.isdigit() for i in pwd) or not any(i.isalpha() for i in pwd):
