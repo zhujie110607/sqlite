@@ -1,8 +1,4 @@
 import sqlite3
-import sys
-import pandas as pd
-from PySide6.QtWidgets import QMessageBox
-
 from file_py.SqlHelper import SqlHelper
 
 
