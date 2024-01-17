@@ -28,7 +28,7 @@ class FileManager:
     def add(self):
         path = select_file("请选择要添加数据的Excel文件")
         if path:
-            df = pd.read_excel(path, sheet_name='添加', usecols=['编码', '当前版本', '历史版本'])
+            df = pd.read_excel(path, sheet_name='添加', usecols=['编码', '当前版本', '历史版本'],dtype={'编码': str})
             if df.empty:
                 QMessageBox.warning(None, "系统消息", "文件为空")
                 return
@@ -43,7 +43,7 @@ class FileManager:
     def update(self):
         path = select_file("请选择要添加数据的Excel文件")
         if path:
-            df = pd.read_excel(path, sheet_name='更新', usecols=['编码', '当前版本', '历史版本'])
+            df = pd.read_excel(path, sheet_name='更新', usecols=['编码', '当前版本', '历史版本'],dtype={'编码': str})
             if df.empty:
                 QMessageBox.warning(None, "系统消息", "文件为空")
                 return
@@ -65,7 +65,7 @@ class FileManager:
 
         path = select_file("请选择要匹配数据的Excel文件")
         if path:
-            df = pd.read_excel(path, sheet_name='找差异', usecols=['编码', '当前版本', '历史版本'])
+            df = pd.read_excel(path, sheet_name='找差异', usecols=['编码', '当前版本', '历史版本'],dtype={'编码': str})
         if df.empty:
             QMessageBox.warning(None, "系统消息", "文件为空")
             return
@@ -96,14 +96,26 @@ class FileManager:
     def delete(self):
         path = select_file("请选择要添加数据的Excel文件")
         if path:
-            df = pd.read_excel(path, sheet_name='删除', usecols=['编码'])
+            df = pd.read_excel(path, sheet_name='删除', usecols=['编码'],dtype={'编码': str})
             if df.empty:
                 QMessageBox.warning(None, "系统消息", "文件为空")
                 return
             else:
                 df.rename(columns={'编码': 'Item'}, inplace=True)
+
+                # 构建删除的sql语句
+                # 将 'Item' 列的值转换为字符串，并使用逗号分隔
+                # items_str = ','.join(f"'{item}'" for item in df['Item'])
+                # # 构造 DELETE 语句
+                # delete_sql = f"DELETE Item_version WHERE Item IN ({items_str})"
+                # if self.sqlHelper.delete_record(delete_sql) > 0:
+                #     QMessageBox.information(None, "系统消息", "删除成功")
+                # else:
+                #     QMessageBox.warning(None, "系统消息", "删除失败")
                 if self.sqlHelper.Delete_SQLServer(df=df) > 0:
                     QMessageBox.information(None, "系统消息", "删除成功")
+                else:
+                    QMessageBox.warning(None, "系统消息", "删除失败")
 
     @wrapper
     # 导出数据

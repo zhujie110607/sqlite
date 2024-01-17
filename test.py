@@ -1,16 +1,16 @@
 import pandas as pd
-# from file_py.SqlHelper import SqlHelper
 
-# sql='select Item,C_version,H_version from Item_version'
-# sql="select UserNumber,UserName,UserPwd,privs from UserManagement"
-# df=pd.read_excel('item.xlsx',sheet_name='Sheet2')
-#
-#
-#
-# i=SqlHelper().Delete_SQLServer(df)
-# print(i)
-df=pd.DataFrame({'name':['zhujie1','wu'],'age':[18,20]})
-print(19==df[df['name']=='zhujie1']['age'].values)
+# 假设 df 是你的 DataFrame，其中包含名为 'Item' 的列
+df = pd.DataFrame({'Item': ['03053774', '03052363', '03051111']})
+
+# 将 'Item' 列的值转换为字符串，并使用逗号分隔
+items_str = ','.join(f"'{item}'" for item in df['Item'])
+
+# 构造 DELETE 语句
+delete_query = f"DELETE Item_version WHERE Item IN ({items_str})"
+
+print(delete_query)
+
 
 
 

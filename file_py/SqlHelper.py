@@ -155,3 +155,32 @@ class SqlHelper:
             else:
                 connection.commit()  # 提交事务
                 return result.rowcount
+
+
+
+    def delete_record(self,sql):
+        try:
+            server=f'{Variable.ip}'
+            database='Fr'
+            username='sa'
+            password='cj126414.'
+            driver='{ODBC Driver 17 for SQL Server}'
+            # 连接数据库
+            connection = pyodbc.connect(f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+            cursor = connection.cursor()
+            # 执行删除操作
+            cursor.execute(sql)
+            # 提交事务
+            connection.commit()
+            print(f"删除成功: {cursor.rowcount} 行受影响")
+            return cursor.rowcount
+        except Exception as e:
+            print(f"发生错误: {str(e)}")
+            return 0
+
+        finally:
+            # 关闭连接
+            if connection:
+                connection.close()
+
+
