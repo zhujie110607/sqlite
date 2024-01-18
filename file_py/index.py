@@ -44,13 +44,17 @@ class MainWindow(QMainWindow):  # 主窗口
     def userFrom(self):
         self.ui.useradmin = Useradmin()
         self.ui.useradmin.show()
+
     def update_userFrom(self):
         self.ui.updateUser = UpdateUser()
         self.ui.updateUser.show()
+
     def on_return_pressed(self):
         try:
             user_input = self.ui.txtScan.text().strip()  # 获取用户输入的内容
             item = ''
+            date = ''
+            flig = True  # 如果用户输入的是条码（长度为16或20），则为True，如果是编码（长度小于16大于0）否则为False
             # 判断用户输入的内容去除前后空格后是否为空
             if user_input:
                 # 如果user_input的长度等于16，则提取前6位，如果长度等于20位，则提取第3位至第10位
@@ -58,19 +62,31 @@ class MainWindow(QMainWindow):  # 主窗口
                     item = '03' + user_input[:6]
                 elif len(user_input) == 20:
                     item = user_input[2:10]
+                elif len(user_input) < 16 and len(user_input) > 0:
+                    item = user_input
+                    flig = False
                 else:
-                    QMessageBox.warning(self, '警告', '条码长度不符合规范！')
+                    # 删除表格所有行
+                    self.clearTable()
+                    QMessageBox.warning(self, '警告', '长度不符合规范(长度范围：1-20)！')
                     return
             else:
-                QMessageBox.warning(self, '警告', '条码不能为空！')
+                # 删除表格所有行
+                self.clearTable()
+                QMessageBox.warning(self, '警告', '长度不能为空！')
                 return
-            year = user_input[-8:-6]  # 截取出生产日期代号
-            date = Variable.prodDate_df[Variable.prodDate_df['year'] == year]['date'].values[0]
-            if date == None:
-                QMessageBox.warning(self, '警告', '生产日期不存在！')
-                return
+            if flig:
+                year = user_input[-8:-6]  # 截取出生产日期代号
+                date = Variable.prodDate_df[Variable.prodDate_df['year'] == year]['date'].values[0]
+                if date == None:
+                    # 删除表格所有行
+                    self.clearTable()
+                    QMessageBox.warning(self, '警告', '生产日期不存在！')
+                    return
             df = self.fileManager.query(str(item))
             if df.shape[0] == 0:
+                # 删除表格所有行
+                self.clearTable()
                 QMessageBox.warning(self, '警告', '编码不存在！')
                 return
             # self.ui.table.setRowCount(0)
@@ -78,6 +94,8 @@ class MainWindow(QMainWindow):  # 主窗口
             df.insert(2, 'date', date)
             self.load_data_to_table(df)
         except Exception as e:
+            # 删除表格所有行
+            self.clearTable()
             QMessageBox.warning(self, '警告', '查询失败！' + str(e))
         finally:
             self.ui.txtScan.clear()
@@ -86,7 +104,7 @@ class MainWindow(QMainWindow):  # 主窗口
 
     def load_data_to_table(self, df):
         # 删除表格所有行
-        self.ui.table.setRowCount(0)
+        self.clearTable()
         r = 0
         for row in range(df.shape[0]):
             # 把df.iloc[row,4]按'//'分割成列表
@@ -104,3 +122,7 @@ class MainWindow(QMainWindow):  # 主窗口
                 self.ui.table.setItem(r, 4, QTableWidgetItem(str(li)))
                 c += 1
                 r += 1
+
+    def clearTable(self):
+        # 删除表格所有行
+        self.ui.table.setRowCount(0)
